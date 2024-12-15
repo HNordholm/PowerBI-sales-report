@@ -1,0 +1,41 @@
+Datetable: 
+DateDim = 
+ADDCOLUMNS(
+    CALENDAR(DATE(2015,1,1), DATE(2018,12,31)),
+    "Year", YEAR([Date]),
+    "Month", MONTH([Date]),
+    "Day", DAY([Date]),
+    "Monthname", FORMAT([Date], "MMMM"),
+    "Weekday", FORMAT([Date], "dddd")
+)
+
+Total profit: 
+Total profit = SUM(TransactionFact[Profit])
+
+
+
+Total Q last year (for YoY measure): 
+TotalqLY = CALCULATE(
+    [Total quantity],SAMEPERIODLASTYEAR(DateDim[Date]))
+
+YoY %: 
+YoY% = DIVIDE(
+    [Total profit]-[YoY profit],[YoY profit],0)
+
+MoM% (with VARS): 
+MoM % = 
+VAR currentmonth = [Total profit]
+VAR previousmonthv = CALCULATE(
+        [Total profit],
+        DATEADD(DateDim[Date], -1, MONTH))
+RETURN
+DIVIDE(currentmonth-previousmonthv,previousmonthv,0)
+
+Transactions last year: 
+transactionsLY = 
+CALCULATE([Total transactions],
+SAMEPERIODLASTYEAR(DateDim[Date]))
+
+
+
+
